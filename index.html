@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phrasal Verb Quiz</title>
+  <style>
+    :root{
+      --bg:#fbf8ff;
+      --card:#fff;
+      --text:#1d1b20;
+      --muted:#6f647a;
+      --line:#eadff2;
+      --primary:#6f4bbb;
+      --primary-dark:#4c3288;
+      --primary-soft:#efe5ff;
+      --accent:#ff8a00;
+      --good:#2e9d57;
+      --ok:#b57800;
+      --bad:#c73d4a;
+      --shadow:0 14px 34px rgba(58,38,94,.12);
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top left, rgba(111,75,187,.16), transparent 34%),
+        linear-gradient(180deg,#fffafd 0%,var(--bg) 100%);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif;
+    }
+    button{
+      appearance:none;
+      border:0;
+      border-radius:18px;
+      background:var(--primary);
+      color:#fff;
+      font:900 15px/1.2 inherit;
+      padding:15px 18px;
+      box-shadow:0 5px 0 var(--primary-dark), 0 14px 24px rgba(111,75,187,.18);
+      cursor:pointer;
+    }
+    button:active{ transform:translateY(2px); box-shadow:0 3px 0 var(--primary-dark); }
+    button.secondary{
+      background:#fff;
+      color:var(--primary-dark);
+      border:1px solid var(--line);
+      box-shadow:0 2px 8px rgba(58,38,94,.08);
+    }
+    button.ghost{
+      background:var(--primary-soft);
+      color:var(--primary-dark);
+      box-shadow:none;
+    }
+    .wrap{
+      width:min(100%, 520px);
+      margin:0 auto;
+      padding:22px 16px 34px;
+    }
+    header{ margin-bottom:20px; }
+    h1{
+      margin:0;
+      font-size:31px;
+      line-height:1.1;
+      font-weight:950;
+      letter-spacing:0;
+    }
+    .sub{
+      margin-top:8px;
+      color:var(--muted);
+      font-size:14px;
+      font-weight:800;
+    }
+    .panel{
+      background:rgba(255,255,255,.92);
+      border:1px solid var(--line);
+      border-radius:26px;
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+    .hidden{ display:none !important; }
+    .modeGrid,.setGrid{
+      display:grid;
+      gap:14px;
+    }
+    .unitLabel{
+      margin:0 0 16px;
+      color:var(--text);
+      font-size:27px;
+      line-height:1.1;
+      font-weight:950;
+    }
+    .modeCard{
+      display:grid;
+      gap:8px;
+      width:100%;
+      min-height:132px;
+      text-align:left;
+      place-items:center start;
+      padding:22px;
+      border-radius:24px;
+    }
+    .modeCard strong{
+      font-size:25px;
+      line-height:1;
+      letter-spacing:.02em;
+    }
+    .modeCard span{
+      color:rgba(255,255,255,.88);
+      font-size:14px;
+      font-weight:800;
+    }
+    .modeCard.speaking{
+      background:var(--accent);
+      box-shadow:0 5px 0 #d96f00, 0 14px 24px rgba(255,138,0,.18);
+    }
+    .setTitle{
+      margin:0 0 16px;
+      font-size:27px;
+      font-weight:950;
+    }
+    .setButton{
+      width:100%;
+      text-align:left;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      background:#fff;
+      color:var(--primary-dark);
+      border:1px solid var(--line);
+      box-shadow:0 2px 10px rgba(58,38,94,.08);
+      padding:18px 20px;
+    }
+    .setButton strong{ font-size:19px; }
+    .setButton span{ color:var(--muted); font-size:13px; }
+    .topBar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .meter{
+      color:var(--primary-dark);
+      background:var(--primary-soft);
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:13px;
+      font-weight:950;
+    }
+    .question{
+      display:grid;
+      gap:14px;
+    }
+    .prompt{
+      background:#fff7ed;
+      border:1px solid #ffe1bd;
+      border-radius:20px;
+      padding:15px;
+      color:#6a3b00;
+      font-size:14px;
+      line-height:1.55;
+      font-weight:900;
+    }
+    audio{
+      width:100%;
+      display:block;
+      border-radius:18px;
+    }
+    .speedRow{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+    }
+    .speedRow button{
+      padding:11px 6px;
+      border-radius:14px;
+      font-size:13px;
+    }
+    .speedRow button.active{
+      background:var(--accent);
+      box-shadow:0 4px 0 #d96f00;
+    }
+    .answer{
+      display:none;
+      border-top:1px solid var(--line);
+      padding-top:16px;
+      margin-top:2px;
+    }
+    .answer.show{ display:block; }
+    .tagRow{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .tag{
+      border-radius:999px;
+      background:var(--primary-soft);
+      color:var(--primary-dark);
+      padding:6px 10px;
+      font-size:12px;
+      font-weight:950;
+    }
+    .en{
+      font-size:20px;
+      line-height:1.55;
+      font-weight:900;
+      margin-bottom:8px;
+    }
+    .ja{
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.65;
+      font-weight:800;
+      margin-bottom:8px;
+    }
+    .ipa{
+      color:#7b6b8f;
+      font-size:14px;
+      line-height:1.5;
+      font-weight:800;
+    }
+    .ratingGrid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin-top:16px;
+    }
+    .ratingGrid button{
+      min-height:70px;
+      padding:10px 4px;
+      display:grid;
+      place-items:center;
+      gap:5px;
+      font-size:12px;
+    }
+    .ratingGrid .mark{
+      color:#fff;
+      font-size:23px;
+      line-height:1;
+    }
+    .ratingGrid .good{ background:var(--good); box-shadow:0 5px 0 #21763f; }
+    .ratingGrid .ok{ background:var(--ok); box-shadow:0 5px 0 #835700; }
+    .ratingGrid .bad{ background:var(--bad); box-shadow:0 5px 0 #942b35; }
+    .navRow{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:14px;
+    }
+    .result{
+      display:none;
+      text-align:center;
+      gap:12px;
+    }
+    .result.show{ display:grid; }
+    .score{
+      font-size:28px;
+      font-weight:950;
+      margin:0;
+    }
+    .bottomNav{
+      position:sticky;
+      bottom:0;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin-top:18px;
+      padding:12px;
+      background:rgba(255,255,255,.94);
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:0 -8px 28px rgba(58,38,94,.1);
+      backdrop-filter:blur(12px);
+    }
+    .bottomNav button{
+      min-height:44px;
+      padding:8px 4px;
+      border-radius:15px;
+      font-size:12px;
+      box-shadow:none;
+    }
+    .bottomNav button:disabled{
+      opacity:.38;
+      cursor:not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>Phrasal Verb Quiz</h1>
+      <div class="sub" id="sub">モードを選んで挑戦してください！</div>
+    </header>
+
+    <section class="panel" id="homePanel">
+      <h2 class="unitLabel">UNIT 1-5</h2>
+      <div class="modeGrid">
+        <button class="modeCard" type="button" data-mode="listening">
+          <strong>LISTENING MODE</strong>
+          <span>音声を聞いて理解度をチェック</span>
+        </button>
+        <button class="modeCard speaking" type="button" data-mode="speaking">
+          <strong>SPEAKING MODE</strong>
+          <span>聞いた英文を文字を見ずに再現</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="setPanel">
+      <h2 class="setTitle" id="setTitle">UNIT 1-5</h2>
+      <div class="setGrid" id="setGrid"></div>
+    </section>
+
+    <section class="panel hidden" id="quizPanel">
+      <div class="topBar">
+        <div class="meter" id="meter">SET 1</div>
+        <button class="secondary" type="button" id="topBtn">TOP</button>
+      </div>
+      <div class="question" id="questionBody">
+        <div class="prompt" id="guide"></div>
+        <audio id="audio" controls preload="auto"></audio>
+        <div class="speedRow" id="speedRow">
+          <button class="ghost" type="button" data-rate="0.5">x0.5</button>
+          <button class="ghost" type="button" data-rate="0.75">x0.75</button>
+          <button class="ghost active" type="button" data-rate="1">x1.0</button>
+        </div>
+        <button type="button" id="showBtn">答えを確認</button>
+        <div class="answer" id="answer">
+          <div class="tagRow">
+            <span class="tag" id="unitTag">UNIT 1</span>
+            <span class="tag" id="themeTag">Wear out</span>
+          </div>
+          <div class="en" id="answerEn"></div>
+          <div class="ja" id="answerJa"></div>
+          <div class="ratingGrid">
+            <button class="good" type="button" data-rating="good"><span class="mark">○</span>GREAT</button>
+            <button class="ok" type="button" data-rating="ok"><span class="mark">△</span>OK</button>
+            <button class="bad" type="button" data-rating="bad"><span class="mark">×</span>Not yet</button>
+          </div>
+        </div>
+        <div class="navRow">
+          <button class="secondary" type="button" id="prevBtn">Prev</button>
+          <button class="secondary" type="button" id="nextBtn">Next</button>
+        </div>
+      </div>
+      <div class="result" id="result">
+        <p class="score" id="score"></p>
+        <p>受験お疲れ様でした：）</p>
+        <button type="button" id="againBtn">もう一度</button>
+      </div>
+    </section>
+
+    <nav class="bottomNav hidden" id="bottomNav" aria-label="Set selector"></nav>
+  </main>
+
+  <script>
+    const DATA = [
+      {unit:"1",set:1,theme:"Wear out",ja:"大好きな靴が傷んでしまい、捨てました。",en:"My favorite shoes were worn out, so I threw them away.",ipa:"maɪ ˈfeɪvɚɪt ʃuz wɚ ˈwɔrn aʊt, soʊ(w)aɪ θru / ðɛm əˈweɪ",audioUrl:"../audio/listening/unit001/set-01.mp3",id:"L001-01"},
+      {unit:"1",set:2,theme:"Wear out",ja:"最近の服はすぐに傷むようです。",en:"Clothes seem to wear out quickly nowadays.",ipa:"/kloʊðz sim tə wɛr aʊt ˈkwɪkli ˈnaʊəˌdeɪz/",audioUrl:"../audio/listening/unit001/set-02.mp3",id:"L001-02"},
+      {unit:"1",set:3,theme:"Wear out",ja:"このカーペットは人がよく歩くところがすり切れています。",en:"This carpet is worn out where people walk a lot.",ipa:"/ðɪs ˈkɑrpət ɪz wɔrn aʊt wɛr ˈpipəl wɔk ə lɑt/",audioUrl:"../audio/listening/unit001/set-03.mp3",id:"L001-03"},
+      {unit:"1",set:4,theme:"Wear out",ja:"姪や甥たちと遊んで疲れ果てました。",en:"Playing with my nieces and nephews wore me out.",ipa:"ˈpleɪ(j)ɪŋ wɪð maɪ ˈnisɪz ən ˈnɛfjuːz / wɔr mi aʊt",audioUrl:"../audio/listening/unit001/set-04.mp3",id:"L001-04"},
+      {unit:"1",set:5,theme:"Wear out",ja:"休みなしで2週間続けて働いて、私は疲れ果てました。",en:"Working two weeks straight without a day off wore me out.",ipa:"/ˈwɝkɪŋ tu wiks streɪt wɪˈðaʊt ə deɪ ɔf wɔr mi aʊt/",audioUrl:"../audio/listening/unit001/set-05.mp3",id:"L001-05"},
+      {unit:"2",set:1,theme:"Wear off",ja:"この薬の効果は数時間でなくなります。",en:"The effect of this drug will wear off in a few hours.",ipa:"ði ɪˈfɛkt əv / ðɪs dʒrʌɡ wɪl / wɛr ɔf / ɪn ə fju aʊɚz",audioUrl:"https://www.eight-english.com/wp-content/uploads/2026/02/The-effect-of-this-drug-will-wear-off-in-a-few-hours.mp3",id:"L002-01"},
+      {unit:"2",set:2,theme:"Wear off",ja:"歳月による劣化で車のペイントが剥がれ始めています。",en:"The paint on my car is starting to wear off from age.",ipa:"ðə peɪnt ɑn maɪ kɑr ɪz ˈstɑrtɪŋ tə wɛr ɔf frəm eɪdʒ",audioUrl:"https://www.eight-english.com/wp-content/uploads/2026/02/The-paint-on-my-car-is-starting-to-wear-off-from-age-1.mp3",id:"L002-02"},
+      {unit:"2",set:3,theme:"Wear off",ja:"歯を抜かれたあと、痛みは徐々に引き始めました。",en:"After the tooth was pulled, the pain started to wear off.",ipa:"/ˈæftɚ ðə tuθ wəz pʊld ðə peɪn ˈstɑrtəd tə wɛr ɔf/",audioUrl:"../audio/listening/unit002/set-03.mp3",id:"L002-03"},
+      {unit:"2",set:4,theme:"Wear off",ja:"最初は気にしませんでしたが、結局彼の熱意は私に伝染しました。",en:"At first I didn't care but his enthusiasm eventually wore off on me.",ipa:"/ət fɝst aɪ ˈdɪdənt kɛr bət hɪz ɪnˈθuziˌæzəm ɪˈvɛntʃuəli wɔr ɔf ɑn mi/",audioUrl:"../audio/listening/unit002/set-04.mp3",id:"L002-04"},
+      {unit:"2",set:5,theme:"Wear off",ja:"最初、彼は内気でしたが、彼女の陽気な態度が彼に伝染しました。",en:"At first he was shy but then her bubbly attitude wore off on him.",ipa:"/ət fɝst hi wəz ʃaɪ bət ðɛn hɚ ˈbʌbli ˈætəˌtud wɔr ɔf ɑn hɪm/",audioUrl:"../audio/listening/unit002/set-05.mp3",id:"L002-05"},
+      {unit:"3",set:1,theme:"Wrap up",ja:"午前中全部をクリスマスプレゼントの包装に使いました。",en:"I spent all morning wrapping up Christmas presents.",ipa:"aɪ spɛnt ɔl ˈmɔrnɪŋ ˈræpɪŋ ʌp ˈkrɪsməs ˈprɛzənts",audioUrl:"https://www.eight-english.com/wp-content/uploads/2026/02/I-spent-all-morning-wrapping-up-Christmas-presents.mp3",id:"L003-01"},
+      {unit:"3",set:2,theme:"Wrap up",ja:"このハーブをビニールで包めば、冷凍できます。",en:"If you wrap these herbs up in plastic you can freeze them.",ipa:"/ɪf ju ræp ðiz ɝbz ʌp ɪn ˈplæstɪk ju kən friz ðɛm/",audioUrl:"../audio/listening/unit003/set-02.mp3",id:"L003-02"},
+      {unit:"3",set:3,theme:"Wrap up",ja:"ちゃんと暖かくしてね。外はとても寒くなってきてますよ！",en:"Be sure to wrap up. It's getting really cold outside!",ipa:"bi ʃʊr də ˈræp ʌp. ɪts ˈɡɛtɪŋ ˈrɪli koʊld ˌaʊtˈsaɪd",audioUrl:"https://www.eight-english.com/wp-content/uploads/2026/02/Be-sure-to-wrap-up.-Its-getting-really-cold-outside.mp3",id:"L003-03"},
+      {unit:"3",set:4,theme:"Wrap up",ja:"天候のせいでコーチは練習を早めに切り上げました。",en:"The coach wrapped up practice early because of the weather.",ipa:"/ðə koʊtʃ ræpt ʌp ˈpræktəs ˈɝli bɪˈkɔz əv ðə ˈwɛðɚ/",audioUrl:"../audio/listening/unit003/set-04.mp3",id:"L003-04"},
+      {unit:"3",set:5,theme:"Wrap up",ja:"この会議は急いで終える必要があります。",en:"We need to wrap up this meeting quickly.",ipa:"wi nid tə ˈræp ʌp ðɪs ˈmitɪŋ / ˈkwɪkli",audioUrl:"https://www.eight-english.com/wp-content/uploads/2026/02/We-need-to-wrap-up-this-meeting-quickly.mp3",id:"L003-05"},
+      {unit:"4",set:1,theme:"Work out",ja:"心配しないでください。うまくいきますよ。",en:"Don't worry. Things are going to work out just fine.",ipa:"doʊnt ˈwɝi./ θɪŋz ɚ ˈɡoʊɪŋ tə wɝk aʊt / dʒʌst faɪn",audioUrl:"https://www.eight-english.com/wp-content/uploads/2026/02/Dont-worry.-Things-are-going-to-work-out-just-fine.mp3",id:"L004-01"},
+      {unit:"4",set:2,theme:"Work out",ja:"うまくいくかどうか、ちょっと心配しているんです。",en:"I'm just worried about how things will work out.",ipa:"/aɪm dʒʌst ˈwɝid əˈbaʊt haʊ θɪŋz wɪl wɝk aʊt/",audioUrl:"../audio/listening/unit004/set-02.mp3",id:"L004-02"},
+      {unit:"4",set:3,theme:"Work out",ja:"週に2回ジムでエクササイズしています。",en:"I work out at a gym twice a week.",ipa:"aɪ wɝk aʊt ət ə dʒɪm / twaɪs ə wik",audioUrl:"https://www.eight-english.com/wp-content/uploads/2026/02/I-work-out-at-a-gym-twice-a-week.mp3",id:"L004-03"},
+      {unit:"4",set:4,theme:"Work out",ja:"医師たちは患者の治療計画を作りました。",en:"The doctors worked out a treatment plan for the patient.",ipa:"/ðə ˈdɑktɚz wɝkt aʊt ə ˈtritmənt plæn fɚ ðə ˈpeɪʃənt/",audioUrl:"../audio/listening/unit004/set-04.mp3",id:"L004-04"},
+      {unit:"4",set:5,theme:"Work out",ja:"交渉人たちは妥協案を作り出せませんでした。",en:"The negotiators couldn't work out a compromise.",ipa:"/ðə nəˈɡoʊʃiˌeɪtɚz ˈkʊdənt wɝk aʊt ə ˈkɑmprəˌmaɪz/",audioUrl:"../audio/listening/unit004/set-05.mp3",id:"L004-05"},
+      {unit:"5",set:1,theme:"Turn in",ja:"終わったらテスト用紙を提出してください。",en:"Turn in your test forms when you have finished.",ipa:"/tɝn ɪn jʊr tɛst fɔrmz wɛn ju hæv ˈfɪnɪʃt/",audioUrl:"https://www.eight-english.com/wp-content/uploads/2026/03/Turn-in-your-test-forms-when-you-have-finished.mp3",id:"L005-01"},
+      {unit:"5",set:2,theme:"Turn in",ja:"マネージャーに休暇願を提出しました。",en:"I turned my vacation request in to the manager.",ipa:"/aɪ tɝnd maɪ veɪˈkeɪʃən rɪˈkwɛst ɪn tə ðə ˈmænɪdʒɚ/",audioUrl:"../audio/listening/unit005/set-02.mp3",id:"L005-02"},
+      {unit:"5",set:3,theme:"Turn in",ja:"今夜は早く寝ますね。おやすみ！",en:"I'm going to turn in early tonight. Good night!",ipa:"/aɪm ˈɡoʊɪŋ tə tɝn ɪn ˈɝli təˈnaɪt | ɡʊd naɪt/",audioUrl:"https://www.eight-english.com/wp-content/uploads/2026/03/Im-going-to-turn-in-early-tonight.-Good-night.mp3",id:"L005-03"},
+      {unit:"5",set:4,theme:"Turn in",ja:"日の出とともに起きられるように、カップルは早めに床に就きました。",en:"The couple turned in early so they could wake up at sunrise.",ipa:"/ðə ˈkʌpəl tɝnd ɪn ˈɝli soʊ ðeɪ kəd weɪk ʌp ət ˈsʌnˌraɪz/",audioUrl:"../audio/listening/unit005/set-04.mp3",id:"L005-04"},
+      {unit:"5",set:5,theme:"Turn in",ja:"私の財布を見つけた人が警察に届けてくれました。",en:"The person who found my wallet turned it in to the police.",ipa:"/ðə ˈpɝsən hu faʊnd maɪ ˈwɑlɪt tɝnd ɪt ɪn tu ðə pəˈlis/",audioUrl:"https://www.eight-english.com/wp-content/uploads/2026/03/The-person-who-found-my-wallet-turned-it-in-to-the-police.mp3",id:"L005-05"}
+    ];
+
+    const els = {
+      sub: document.getElementById("sub"),
+      homePanel: document.getElementById("homePanel"),
+      setPanel: document.getElementById("setPanel"),
+      quizPanel: document.getElementById("quizPanel"),
+      setTitle: document.getElementById("setTitle"),
+      setGrid: document.getElementById("setGrid"),
+      meter: document.getElementById("meter"),
+      guide: document.getElementById("guide"),
+      audio: document.getElementById("audio"),
+      speedRow: document.getElementById("speedRow"),
+      showBtn: document.getElementById("showBtn"),
+      answer: document.getElementById("answer"),
+      unitTag: document.getElementById("unitTag"),
+      themeTag: document.getElementById("themeTag"),
+      answerEn: document.getElementById("answerEn"),
+      answerJa: document.getElementById("answerJa"),
+      prevBtn: document.getElementById("prevBtn"),
+      nextBtn: document.getElementById("nextBtn"),
+      topBtn: document.getElementById("topBtn"),
+      bottomNav: document.getElementById("bottomNav"),
+      result: document.getElementById("result"),
+      score: document.getElementById("score"),
+      againBtn: document.getElementById("againBtn"),
+      questionBody: document.getElementById("questionBody")
+    };
+    const state = {
+      mode:null,
+      set:1,
+      deck:[],
+      index:0,
+      score:0,
+      answered:false,
+      rate:1,
+      reviewDecks:{ ok:[], bad:[] },
+      isReview:false
+    };
+
+    function shuffle(items){
+      return [...items].sort(() => Math.random() - .5);
+    }
+    function show(panel){
+      [els.homePanel, els.setPanel, els.quizPanel].forEach(item => item.classList.add("hidden"));
+      panel.classList.remove("hidden");
+      els.bottomNav.classList.toggle("hidden", panel !== els.quizPanel);
+    }
+    function selectMode(mode){
+      state.mode = mode;
+      els.sub.textContent = mode === "listening"
+        ? "LISTENING MODE"
+        : "SPEAKING MODE";
+      els.setTitle.textContent = mode === "listening" ? "LISTENING MODE" : "SPEAKING MODE";
+      els.setGrid.innerHTML = [1,2,3,4,5].map(set => `
+        <button class="setButton" type="button" data-set="${set}">
+          <strong>Set ${set}</strong><span>UNIT 1-5 · 5 questions</span>
+        </button>
+      `).join("");
+      els.setGrid.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => startQuiz(Number(btn.dataset.set)));
+      });
+      show(els.setPanel);
+    }
+    function startQuiz(set){
+      state.set = set;
+      state.deck = shuffle(DATA.filter(card => card.set === set));
+      state.index = 0;
+      state.score = 0;
+      state.isReview = false;
+      els.result.classList.remove("show");
+      els.questionBody.style.display = "";
+      renderBottomNav();
+      show(els.quizPanel);
+      renderQuestion();
+    }
+    function renderBottomNav(){
+      els.bottomNav.innerHTML = `
+        ${[1,2,3,4,5].map(set => `<button class="ghost" type="button" data-set="${set}">SET ${set}</button>`).join("")}
+        <button class="ghost" type="button" data-review="ok" ${state.reviewDecks.ok.length ? "" : "disabled"}>△</button>
+        <button class="ghost" type="button" data-review="bad" ${state.reviewDecks.bad.length ? "" : "disabled"}>×</button>
+        <button class="ghost" type="button" data-top="true">TOP</button>
+      `;
+      els.bottomNav.querySelectorAll("[data-set]").forEach(btn => {
+        btn.addEventListener("click", () => startQuiz(Number(btn.dataset.set)));
+      });
+      els.bottomNav.querySelectorAll("[data-review]").forEach(btn => {
+        btn.addEventListener("click", () => startReview(btn.dataset.review));
+      });
+      els.bottomNav.querySelector("[data-top]").addEventListener("click", goHome);
+    }
+    function addReview(kind, card){
+      if (kind !== "ok" && kind !== "bad") return;
+      const deck = state.reviewDecks[kind];
+      const existing = deck.findIndex(item => item.id === card.id);
+      if (existing >= 0) deck.splice(existing, 1);
+      deck.push(card);
+      renderBottomNav();
+    }
+    function startReview(kind){
+      const deck = state.reviewDecks[kind];
+      if (!deck.length) return;
+      state.set = kind === "ok" ? "△" : "×";
+      state.deck = shuffle(deck);
+      state.index = 0;
+      state.score = 0;
+      state.isReview = true;
+      els.result.classList.remove("show");
+      els.questionBody.style.display = "";
+      renderBottomNav();
+      show(els.quizPanel);
+      renderQuestion();
+    }
+    function renderQuestion(){
+      const card = state.deck[state.index];
+      state.answered = false;
+      els.answer.classList.remove("show");
+      const modeLabel = state.mode === "listening" ? "LISTENING" : "SPEAKING";
+      const setLabel = state.isReview ? `REVIEW ${state.set}` : `SET ${state.set}`;
+      els.meter.textContent = `${modeLabel} · ${setLabel} · ${state.index + 1} / ${state.deck.length}`;
+      els.guide.textContent = state.mode === "speaking"
+        ? "音声を聞いたあと、文字を見ずに英文を再現しよう。"
+        : "音声を聞いて、内容をイメージしてください。";
+      els.audio.src = card.audioUrl;
+      els.audio.playbackRate = state.rate;
+      els.unitTag.textContent = `UNIT ${card.unit}`;
+      els.themeTag.textContent = card.theme;
+      els.answerEn.textContent = card.en;
+      els.answerJa.textContent = card.ja;
+      els.prevBtn.disabled = state.index === 0;
+      els.nextBtn.textContent = state.index === state.deck.length - 1 ? "Finish" : "Next";
+      const playback = els.audio.play();
+      if (playback?.catch) playback.catch(() => {});
+    }
+    function showAnswer(){
+      els.answer.classList.add("show");
+      els.answer.scrollIntoView({ behavior:"smooth", block:"nearest" });
+    }
+    function rate(event){
+      const card = state.deck[state.index];
+      addReview(event.currentTarget.dataset.rating, card);
+      if (!state.answered) state.score += 1;
+      state.answered = true;
+      next();
+    }
+    function next(){
+      if (state.index >= state.deck.length - 1) return finish();
+      state.index += 1;
+      renderQuestion();
+    }
+    function prev(){
+      if (state.index <= 0) return;
+      state.index -= 1;
+      renderQuestion();
+    }
+    function finish(){
+      els.questionBody.style.display = "none";
+      els.result.classList.add("show");
+      els.score.textContent = `完了: ${state.deck.length}問`;
+      els.result.scrollIntoView({ behavior:"smooth", block:"start" });
+    }
+    function goHome(){
+      els.audio.pause();
+      state.mode = null;
+      els.sub.textContent = "モードを選んで挑戦してください！";
+      show(els.homePanel);
+    }
+
+    document.querySelectorAll("[data-mode]").forEach(btn => {
+      btn.addEventListener("click", () => selectMode(btn.dataset.mode));
+    });
+    els.showBtn.addEventListener("click", showAnswer);
+    els.prevBtn.addEventListener("click", prev);
+    els.nextBtn.addEventListener("click", next);
+    els.topBtn.addEventListener("click", goHome);
+    els.againBtn.addEventListener("click", () => startQuiz(state.set));
+    els.answer.querySelectorAll("[data-rating]").forEach(btn => {
+      btn.addEventListener("click", rate);
+    });
+    els.speedRow.querySelectorAll("[data-rate]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        state.rate = Number(btn.dataset.rate);
+        els.audio.playbackRate = state.rate;
+        els.speedRow.querySelectorAll("button").forEach(item => item.classList.toggle("active", item === btn));
+      });
+    });
+  </script>
+</body>
+</html>
