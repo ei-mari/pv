@@ -80,7 +80,7 @@
       box-shadow:var(--shadow);
     }
     .hidden{ display:none !important; }
-    .modeGrid,.setGrid{
+    .rangeGrid,.modeGrid,.setGrid{
       display:grid;
       gap:14px;
     }
@@ -115,6 +115,14 @@
       background:var(--accent);
       box-shadow:0 5px 0 #d96f00, 0 14px 24px rgba(255,138,0,.18);
     }
+    .modeCard.nextRange{
+      background:#168a72;
+      box-shadow:0 5px 0 #0c6653, 0 14px 24px rgba(22,138,114,.18);
+    }
+    .backToUnits{
+      width:100%;
+      margin-top:14px;
+    }
     .setTitle{
       margin:0 0 16px;
       font-size:27px;
@@ -134,6 +142,22 @@
     }
     .setButton strong{ font-size:19px; }
     .setButton span{ color:var(--muted); font-size:13px; }
+    .setActions{
+      display:grid;
+      gap:10px;
+      margin-top:18px;
+      padding-top:18px;
+      border-top:1px solid var(--line);
+    }
+    .setActions button{ width:100%; }
+    button.switchModeAction{
+      background:var(--accent);
+      box-shadow:0 5px 0 #d96f00, 0 14px 24px rgba(255,138,0,.18);
+    }
+    button.switchModeAction.toListening{
+      background:var(--primary);
+      box-shadow:0 5px 0 var(--primary-dark), 0 14px 24px rgba(111,75,187,.18);
+    }
     .topBar{
       display:flex;
       justify-content:space-between;
@@ -292,11 +316,25 @@
   <main class="wrap">
     <header>
       <h1>Phrasal Verb Quiz</h1>
-      <div class="sub" id="sub">モードを選んで挑戦してください！</div>
+      <div class="sub" id="sub">UNITを選んで挑戦してください！</div>
     </header>
 
     <section class="panel" id="homePanel">
-      <h2 class="unitLabel">UNIT 1-5</h2>
+      <h2 class="unitLabel">UNITを選択</h2>
+      <div class="rangeGrid">
+        <button class="modeCard" type="button" data-range="1-5">
+          <strong>UNIT 1-5</strong>
+          <span>Wear out ～ Turn in</span>
+        </button>
+        <button class="modeCard nextRange" type="button" data-range="6-10">
+          <strong>UNIT 6-10</strong>
+          <span>Turn out ～ Look up</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="modePanel">
+      <h2 class="unitLabel" id="modeUnitLabel">UNIT 1-5</h2>
       <div class="modeGrid">
         <button class="modeCard" type="button" data-mode="listening">
           <strong>LISTENING MODE</strong>
@@ -307,11 +345,16 @@
           <span>聞いた英文を文字を見ずに再現</span>
         </button>
       </div>
+      <button class="secondary backToUnits" type="button" data-units-home>UNIT選択に戻る</button>
     </section>
 
     <section class="panel hidden" id="setPanel">
       <h2 class="setTitle" id="setTitle">UNIT 1-5</h2>
       <div class="setGrid" id="setGrid"></div>
+      <div class="setActions">
+        <button class="secondary" type="button" id="homeFromSets">ホームへ戻る</button>
+        <button class="switchModeAction" type="button" id="switchModeBtn">SPEAKING MODEを確認する</button>
+      </div>
     </section>
 
     <section class="panel hidden" id="quizPanel">
@@ -382,16 +425,45 @@
       {unit:"5",set:2,theme:"Turn in",ja:"マネージャーに休暇願を提出しました。",en:"I turned my vacation request in to the manager.",ipa:"/aɪ tɝnd maɪ veɪˈkeɪʃən rɪˈkwɛst ɪn tə ðə ˈmænɪdʒɚ/",audioUrl:"unit005/set-02.mp3",id:"L005-02"},
       {unit:"5",set:3,theme:"Turn in",ja:"今夜は早く寝ますね。おやすみ！",en:"I'm going to turn in early tonight. Good night!",ipa:"/aɪm ˈɡoʊɪŋ tə tɝn ɪn ˈɝli təˈnaɪt | ɡʊd naɪt/",audioUrl:"unit005/set-03.mp3",id:"L005-03"},
       {unit:"5",set:4,theme:"Turn in",ja:"日の出とともに起きられるように、カップルは早めに床に就きました。",en:"The couple turned in early so they could wake up at sunrise.",ipa:"/ðə ˈkʌpəl tɝnd ɪn ˈɝli soʊ ðeɪ kəd weɪk ʌp ət ˈsʌnˌraɪz/",audioUrl:"unit005/set-04.mp3",id:"L005-04"},
-      {unit:"5",set:5,theme:"Turn in",ja:"私の財布を見つけた人が警察に届けてくれました。",en:"The person who found my wallet turned it in to the police.",ipa:"/ðə ˈpɝsən hu faʊnd maɪ ˈwɑlɪt tɝnd ɪt ɪn tu ðə pəˈlis/",audioUrl:"unit005/set-05.mp3",id:"L005-05"}
+      {unit:"5",set:5,theme:"Turn in",ja:"私の財布を見つけた人が警察に届けてくれました。",en:"The person who found my wallet turned it in to the police.",ipa:"/ðə ˈpɝsən hu faʊnd maɪ ˈwɑlɪt tɝnd ɪt ɪn tu ðə pəˈlis/",audioUrl:"unit005/set-05.mp3",id:"L005-05"},
+      {unit:"6",set:1,theme:"Turn out",ja:"そのゴルフトーナメントに集まった観客はごくわずかでした。",en:"Very few spectators turned out for the golf tournament.",ipa:"",audioUrl:"unit006/set-01.mp3",id:"L006-01"},
+      {unit:"6",set:2,theme:"Turn out",ja:"何千もの人がパレードに集まりました。",en:"Thousands of people turned out for the parade.",ipa:"",audioUrl:"unit006/set-02.mp3",id:"L006-02"},
+      {unit:"6",set:3,theme:"Turn out",ja:"その企業は毎日何百台ものテレビを製造しています。",en:"That company turns out hundreds of TVs every day.",ipa:"",audioUrl:"unit006/set-03.mp3",id:"L006-03"},
+      {unit:"6",set:4,theme:"Turn out",ja:"心配ないです。うまくいきますから。",en:"Don't worry, things are going to turn out fine.",ipa:"",audioUrl:"unit006/set-04.mp3",id:"L006-04"},
+      {unit:"6",set:5,theme:"Turn out",ja:"私が焼いたこのチョコレートマフィンは、すばらしくうまくできました。",en:"These chocolate muffins I baked turned out wonderfully.",ipa:"",audioUrl:"unit006/set-05.mp3",id:"L006-05"},
+      {unit:"7",set:1,theme:"Call off",ja:"雷によってサッカーの練習は中止されました。",en:"Soccer practice was called off because of lightning.",ipa:"",audioUrl:"unit007/set-01.mp3",id:"L007-01"},
+      {unit:"7",set:2,theme:"Call off",ja:"毎年行う出張はコロナウイルスによって中止されました。",en:"Our annual business trip has been called off due to the coronavirus.",ipa:"",audioUrl:"unit007/set-02.mp3",id:"L007-02"},
+      {unit:"7",set:3,theme:"Call off",ja:"会社のゴルフコンペは雨によって中止になるでしょうか？",en:"Is the company golf outing going to be called off because of rain?",ipa:"",audioUrl:"unit007/set-03.mp3",id:"L007-03"},
+      {unit:"7",set:4,theme:"Call off",ja:"たった2日で会社の社長が交渉を中止しました。",en:"The company president called off the negotiations after just two days.",ipa:"",audioUrl:"unit007/set-04.mp3",id:"L007-04"},
+      {unit:"7",set:5,theme:"Call off",ja:"娘は病気なので、彼女の誕生日パーティーを中止する必要があります。",en:"We need to call off our daughter's birthday party because she is sick.",ipa:"",audioUrl:"unit007/set-05.mp3",id:"L007-05"},
+      {unit:"8",set:1,theme:"Pass out",ja:"ジェットコースターに乗っているとき、妹が気絶したんです。",en:"My sister passed out while riding the roller coaster.",ipa:"",audioUrl:"unit008/set-01.mp3",id:"L008-01"},
+      {unit:"8",set:2,theme:"Pass out",ja:"ひどい自動車事故を目撃した女性は気絶しました。",en:"The woman who witnessed the horrible car accident passed out.",ipa:"",audioUrl:"unit008/set-02.mp3",id:"L008-02"},
+      {unit:"8",set:3,theme:"Pass out",ja:"教師がクラスの各人にテストを配りました。",en:"The teacher passed out tests to each member of the class.",ipa:"",audioUrl:"unit008/set-03.mp3",id:"L008-03"},
+      {unit:"8",set:4,theme:"Pass out",ja:"訪問客のすべてに認証バッジを配る必要があります。",en:"We need to pass out security badges to all of the people visiting.",ipa:"",audioUrl:"unit008/set-04.mp3",id:"L008-04"},
+      {unit:"8",set:5,theme:"Pass out",ja:"救急車を呼んで！ この人、気絶しそうです！",en:"Call an ambulance! I think he is going to pass out!",ipa:"",audioUrl:"unit008/set-05.mp3",id:"L008-05"},
+      {unit:"9",set:1,theme:"Run across",ja:"京都での休暇中に偶然古い友人に出会いました。",en:"I ran across an old friend while on vacation in Kyoto.",ipa:"",audioUrl:"unit009/set-01.mp3",id:"L009-01"},
+      {unit:"9",set:2,theme:"Run across",ja:"彼の妻は、夫の電話を借りているときに、たまたま別の女性の写真を見つけました。",en:"His wife ran across pictures of another woman when borrowing his phone.",ipa:"",audioUrl:"unit009/set-02.mp3",id:"L009-02"},
+      {unit:"9",set:3,theme:"Run across",ja:"コンベンションでたまたまトムに会ったら、よろしく伝えておいて。",en:"If you run across Tom at the convention, please give him my regards.",ipa:"",audioUrl:"unit009/set-03.mp3",id:"L009-03"},
+      {unit:"9",set:4,theme:"Run across",ja:"私たちは、たまたまうちの会計ソフトの問題を見つけました。",en:"We have run across a problem with our accounting software.",ipa:"",audioUrl:"unit009/set-04.mp3",id:"L009-04"},
+      {unit:"9",set:5,theme:"Run across",ja:"この古くて美しい花瓶はどこで見つけたの？！",en:"Where did you run across this beautiful, old vase?!",ipa:"",audioUrl:"unit009/set-05.mp3",id:"L009-05"},
+      {unit:"10",set:1,theme:"Look up",ja:"問題の答えをインターネットで調べました。",en:"I looked up the answer to the question on the internet.",ipa:"",audioUrl:"unit010/set-01.mp3",id:"L010-01"},
+      {unit:"10",set:2,theme:"Look up",ja:"わからないどんな単語も辞書で調べることが重要です。",en:"It's important to look up any words you don't know in the dictionary.",ipa:"",audioUrl:"unit010/set-02.mp3",id:"L010-02"},
+      {unit:"10",set:3,theme:"Look up",ja:"帰省したとき、中学時代の古い友人の家を訪問しました。",en:"When I went back to my hometown, I looked up an old friend from middle school.",ipa:"",audioUrl:"unit010/set-03.mp3",id:"L010-03"},
+      {unit:"10",set:4,theme:"Look up",ja:"東京に行ったとき、日本のペンフレンドの家を探そうとしましたが、きっと引っ越してしまったのでしょう。",en:"I tried to look up my Japanese pen pal when I went to Tokyo, but she must have moved.",ipa:"",audioUrl:"unit010/set-04.mp3",id:"L010-04"},
+      {unit:"10",set:5,theme:"Look up",ja:"いったん経済が回復したら、売上が上向くと期待しています。",en:"I expect our sales to look up once the economy recovers.",ipa:"",audioUrl:"unit010/set-05.mp3",id:"L010-05"}
     ];
 
     const els = {
       sub: document.getElementById("sub"),
       homePanel: document.getElementById("homePanel"),
+      modePanel: document.getElementById("modePanel"),
+      modeUnitLabel: document.getElementById("modeUnitLabel"),
       setPanel: document.getElementById("setPanel"),
       quizPanel: document.getElementById("quizPanel"),
       setTitle: document.getElementById("setTitle"),
       setGrid: document.getElementById("setGrid"),
+      homeFromSets: document.getElementById("homeFromSets"),
+      switchModeBtn: document.getElementById("switchModeBtn"),
       meter: document.getElementById("meter"),
       guide: document.getElementById("guide"),
       audio: document.getElementById("audio"),
@@ -412,6 +484,7 @@
       questionBody: document.getElementById("questionBody")
     };
     const state = {
+      unitRange:null,
       mode:null,
       set:1,
       deck:[],
@@ -427,19 +500,28 @@
       return [...items].sort(() => Math.random() - .5);
     }
     function show(panel){
-      [els.homePanel, els.setPanel, els.quizPanel].forEach(item => item.classList.add("hidden"));
+      [els.homePanel, els.modePanel, els.setPanel, els.quizPanel].forEach(item => item.classList.add("hidden"));
       panel.classList.remove("hidden");
       els.bottomNav.classList.toggle("hidden", panel !== els.quizPanel);
     }
+    function selectRange(unitRange){
+      state.reviewDecks = { ok:[], bad:[] };
+      state.unitRange = unitRange;
+      els.modeUnitLabel.textContent = `UNIT ${unitRange}`;
+      els.sub.textContent = `UNIT ${unitRange}`;
+      show(els.modePanel);
+    }
     function selectMode(mode){
       state.mode = mode;
-      els.sub.textContent = mode === "listening"
-        ? "LISTENING MODE"
-        : "SPEAKING MODE";
+      els.sub.textContent = `UNIT ${state.unitRange} · ${mode === "listening" ? "LISTENING MODE" : "SPEAKING MODE"}`;
       els.setTitle.textContent = mode === "listening" ? "LISTENING MODE" : "SPEAKING MODE";
+      els.switchModeBtn.textContent = mode === "listening"
+        ? "SPEAKING MODEを確認する"
+        : "LISTENING MODEを確認する";
+      els.switchModeBtn.classList.toggle("toListening", mode === "speaking");
       els.setGrid.innerHTML = [1,2,3,4,5].map(set => `
         <button class="setButton" type="button" data-set="${set}">
-          <strong>Set ${set}</strong><span>UNIT 1-5 · 5 questions</span>
+          <strong>Set ${set}</strong><span>UNIT ${state.unitRange} · 5 questions</span>
         </button>
       `).join("");
       els.setGrid.querySelectorAll("button").forEach(btn => {
@@ -449,7 +531,8 @@
     }
     function startQuiz(set){
       state.set = set;
-      state.deck = shuffle(DATA.filter(card => card.set === set));
+      const [startUnit, endUnit] = state.unitRange.split("-").map(Number);
+      state.deck = shuffle(DATA.filter(card => card.set === set && Number(card.unit) >= startUnit && Number(card.unit) <= endUnit));
       state.index = 0;
       state.score = 0;
       state.isReview = false;
@@ -546,13 +629,22 @@
     }
     function goHome(){
       els.audio.pause();
+      state.unitRange = null;
       state.mode = null;
-      els.sub.textContent = "モードを選んで挑戦してください！";
+      els.sub.textContent = "UNITを選んで挑戦してください！";
       show(els.homePanel);
     }
 
+    document.querySelectorAll("[data-range]").forEach(btn => {
+      btn.addEventListener("click", () => selectRange(btn.dataset.range));
+    });
     document.querySelectorAll("[data-mode]").forEach(btn => {
       btn.addEventListener("click", () => selectMode(btn.dataset.mode));
+    });
+    document.querySelector("[data-units-home]").addEventListener("click", goHome);
+    els.homeFromSets.addEventListener("click", goHome);
+    els.switchModeBtn.addEventListener("click", () => {
+      selectMode(state.mode === "listening" ? "speaking" : "listening");
     });
     els.showBtn.addEventListener("click", showAnswer);
     els.prevBtn.addEventListener("click", prev);
