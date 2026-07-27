@@ -162,6 +162,13 @@
       background:var(--primary);
       box-shadow:0 5px 0 var(--primary-dark), 0 14px 24px rgba(111,75,187,.18);
     }
+    .prompt.instant{
+      background:var(--primary-soft);
+      border-color:#d9c5ff;
+      color:var(--primary-dark);
+      font-size:20px;
+      line-height:1.55;
+    }
     .topBar{
       display:flex;
       justify-content:space-between;
@@ -217,6 +224,10 @@
       margin-top:2px;
     }
     .answer.show{ display:block; }
+    .answerAudio{
+      width:100%;
+      margin:0 0 14px;
+    }
     .tagRow{
       display:flex;
       gap:8px;
@@ -344,9 +355,9 @@
     <section class="panel hidden" id="modePanel">
       <h2 class="unitLabel" id="modeUnitLabel">UNIT 1-5</h2>
       <div class="modeGrid">
-        <button class="modeCard" type="button" data-mode="listening">
-          <strong>LISTENING MODE</strong>
-          <span>音声を聞いて理解度をチェック</span>
+        <button class="modeCard" type="button" data-mode="instant">
+          <strong>瞬間英作文 MODE</strong>
+          <span>日本語を見て、すぐに英語を作る</span>
         </button>
         <button class="modeCard speaking" type="button" data-mode="speaking">
           <strong>SPEAKING MODE</strong>
@@ -367,7 +378,7 @@
 
     <section class="panel hidden" id="quizPanel">
       <div class="topBar">
-        <div class="meter" id="meter">SET 1</div>
+        <div class="meter" id="meter">TEST 1</div>
         <button class="secondary" type="button" id="topBtn">TOP</button>
       </div>
       <div class="question" id="questionBody">
@@ -380,6 +391,7 @@
         </div>
         <button type="button" id="showBtn">答えを確認</button>
         <div class="answer" id="answer">
+          <audio id="answerAudio" class="answerAudio hidden" controls preload="auto"></audio>
           <div class="tagRow">
             <span class="tag" id="unitTag">UNIT 1</span>
             <span class="tag" id="themeTag">Wear out</span>
@@ -500,6 +512,7 @@
       meter: document.getElementById("meter"),
       guide: document.getElementById("guide"),
       audio: document.getElementById("audio"),
+      answerAudio: document.getElementById("answerAudio"),
       speedRow: document.getElementById("speedRow"),
       showBtn: document.getElementById("showBtn"),
       answer: document.getElementById("answer"),
@@ -532,6 +545,9 @@
     function shuffle(items){
       return [...items].sort(() => Math.random() - .5);
     }
+    function rangeLabel(){
+      return `UNIT ${state.unitRange}`;
+    }
     function show(panel){
       [els.homePanel, els.modePanel, els.setPanel, els.quizPanel].forEach(item => item.classList.add("hidden"));
       panel.classList.remove("hidden");
@@ -540,21 +556,23 @@
     function selectRange(unitRange){
       state.reviewDecks = { ok:[], bad:[] };
       state.unitRange = unitRange;
-      els.modeUnitLabel.textContent = `UNIT ${unitRange}`;
-      els.sub.textContent = `UNIT ${unitRange}`;
+      els.modeUnitLabel.textContent = rangeLabel();
+      els.sub.textContent = rangeLabel();
       show(els.modePanel);
     }
     function selectMode(mode){
       state.mode = mode;
-      els.sub.textContent = `UNIT ${state.unitRange} · ${mode === "listening" ? "LISTENING MODE" : "SPEAKING MODE"}`;
-      els.setTitle.textContent = mode === "listening" ? "LISTENING MODE" : "SPEAKING MODE";
-      els.switchModeBtn.textContent = mode === "listening"
+      const isInstant = mode === "instant";
+      els.sub.textContent = `${rangeLabel()} · ${isInstant ? "瞬間英作文 MODE" : "SPEAKING MODE"}`;
+      els.setTitle.textContent = isInstant ? "瞬間英作文 MODE" : "SPEAKING MODE";
+      els.switchModeBtn.textContent = isInstant
         ? "SPEAKING MODEを確認する"
-        : "LISTENING MODEを確認する";
+        : "瞬間英作文 MODEを確認する";
       els.switchModeBtn.classList.toggle("toListening", mode === "speaking");
-      els.setGrid.innerHTML = [1,2,3,4,5].map(set => `
+      const tests = [1,2,3,4,5];
+      els.setGrid.innerHTML = tests.map(set => `
         <button class="setButton" type="button" data-set="${set}">
-          <strong>Set ${set}</strong><span>UNIT ${state.unitRange} · 5 questions</span>
+          <strong>TEST ${set}</strong><span>${rangeLabel()} · 5 questions</span>
         </button>
       `).join("");
       els.setGrid.querySelectorAll("button").forEach(btn => {
@@ -576,8 +594,9 @@
       renderQuestion();
     }
     function renderBottomNav(){
+      const tests = [1,2,3,4,5];
       els.bottomNav.innerHTML = `
-        ${[1,2,3,4,5].map(set => `<button class="ghost" type="button" data-set="${set}">SET ${set}</button>`).join("")}
+        ${tests.map(set => `<button class="ghost" type="button" data-set="${set}">TEST ${set}</button>`).join("")}
         <button class="ghost" type="button" data-review="ok" ${state.reviewDecks.ok.length ? "" : "disabled"}>△</button>
         <button class="ghost" type="button" data-review="bad" ${state.reviewDecks.bad.length ? "" : "disabled"}>×</button>
         <button class="ghost" type="button" data-top="true">TOP</button>
@@ -616,13 +635,28 @@
       const card = state.deck[state.index];
       state.answered = false;
       els.answer.classList.remove("show");
-      const modeLabel = state.mode === "listening" ? "LISTENING" : "SPEAKING";
-      const setLabel = state.isReview ? `REVIEW ${state.set}` : `SET ${state.set}`;
+      els.answerAudio.classList.add("hidden");
+      const isInstant = state.mode === "instant";
+      const modeLabel = isInstant ? "瞬間英作文" : "SPEAKING";
+      const setLabel = state.isReview ? `REVIEW ${state.set}` : `TEST ${state.set}`;
       els.meter.textContent = `${modeLabel} · ${setLabel} · ${state.index + 1} / ${state.deck.length}`;
-      els.guide.textContent = state.mode === "speaking"
+      els.guide.textContent = isInstant ? card.ja :
+        state.mode === "speaking"
         ? "音声を聞いたあと、文字を見ずに英文を再現しよう。"
         : "音声を聞いて、内容をイメージしてください。";
-      els.audio.src = card.audioUrl;
+      els.guide.classList.toggle("instant", isInstant);
+      els.audio.classList.toggle("hidden", isInstant);
+      els.speedRow.classList.toggle("hidden", isInstant);
+      els.answerAudio.classList.toggle("hidden", !isInstant);
+      els.answerAudio.src = card.audioUrl;
+      els.answerAudio.playbackRate = state.rate;
+      if (isInstant) {
+        els.audio.pause();
+        els.audio.removeAttribute("src");
+        els.audio.load();
+      } else {
+        els.audio.src = card.audioUrl;
+      }
       els.audio.playbackRate = state.rate;
       els.unitTag.textContent = `UNIT ${card.unit}`;
       els.themeTag.textContent = card.theme;
@@ -630,11 +664,14 @@
       els.answerJa.textContent = card.ja;
       els.prevBtn.disabled = state.index === 0;
       els.nextBtn.textContent = state.index === state.deck.length - 1 ? "Finish" : "Next";
-      const playback = els.audio.play();
-      if (playback?.catch) playback.catch(() => {});
+      if (!isInstant) {
+        const playback = els.audio.play();
+        if (playback?.catch) playback.catch(() => {});
+      }
     }
     function showAnswer(){
       els.answer.classList.add("show");
+      if (state.mode === "instant") els.answerAudio.classList.remove("hidden");
       els.answer.scrollIntoView({ behavior:"smooth", block:"nearest" });
     }
     function rate(event){
@@ -677,7 +714,7 @@
     document.querySelector("[data-units-home]").addEventListener("click", goHome);
     els.homeFromSets.addEventListener("click", goHome);
     els.switchModeBtn.addEventListener("click", () => {
-      selectMode(state.mode === "listening" ? "speaking" : "listening");
+      selectMode(state.mode === "instant" ? "speaking" : "instant");
     });
     els.showBtn.addEventListener("click", showAnswer);
     els.prevBtn.addEventListener("click", prev);
@@ -691,6 +728,7 @@
       btn.addEventListener("click", () => {
         state.rate = Number(btn.dataset.rate);
         els.audio.playbackRate = state.rate;
+        els.answerAudio.playbackRate = state.rate;
         els.speedRow.querySelectorAll("button").forEach(item => item.classList.toggle("active", item === btn));
       });
     });
