@@ -123,6 +123,44 @@
       background:#3267b7;
       box-shadow:0 5px 0 #204985, 0 14px 24px rgba(50,103,183,.18);
     }
+    .modeCard.fourthRange{
+      background:#b44a87;
+      box-shadow:0 5px 0 #7f2858, 0 14px 24px rgba(180,74,135,.18);
+    }
+    .reviewSection{
+      margin-top:22px;
+      padding-top:18px;
+      border-top:1px solid var(--line);
+    }
+    .reviewTitle{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+      font-weight:900;
+    }
+    .reviewNote{
+      margin:5px 0 12px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:800;
+    }
+    .reviewGrid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:10px;
+    }
+    .reviewCard{
+      min-height:112px;
+      display:grid;
+      gap:7px;
+      place-items:center start;
+      text-align:left;
+      padding:16px;
+    }
+    .reviewCard strong{ font-size:19px; }
+    .reviewCard span{ color:rgba(255,255,255,.88); font-size:12px; }
+    .reviewCard.reviewOk{ background:var(--ok); box-shadow:0 5px 0 #835700, 0 14px 24px rgba(181,120,0,.16); }
+    .reviewCard.reviewBad{ background:var(--bad); box-shadow:0 5px 0 #942b35, 0 14px 24px rgba(199,61,74,.16); }
     .backToUnits{
       width:100%;
       margin-top:14px;
@@ -349,6 +387,22 @@
           <strong>UNIT 11-15</strong>
           <span>Give back ～ Break down</span>
         </button>
+        <button class="modeCard fourthRange" type="button" data-range="16-20">
+          <strong>UNIT 16-20</strong>
+          <span>Fill out ～ Turn up</span>
+        </button>
+      </div>
+      <div class="reviewSection">
+        <p class="reviewTitle">REVIEW</p>
+        <p class="reviewNote">UNITを横断して復習ができます。</p>
+        <div class="reviewGrid">
+          <button class="reviewCard reviewOk" type="button" data-global-review="ok" disabled>
+            <strong>△ CHECK</strong><span>復習リストは空です</span>
+          </button>
+          <button class="reviewCard reviewBad" type="button" data-global-review="bad" disabled>
+            <strong>× CHECK</strong><span>復習リストは空です</span>
+          </button>
+        </div>
       </div>
     </section>
 
@@ -495,7 +549,32 @@
       {unit:"15",set:2,theme:"Break down",ja:"車が故障したので仕事に2時間遅刻しました。",en:"I was two hours late to work because my car broke down.",ipa:"/aɪ wəz tu ˈaʊɚz leɪt tə wɝk bɪˈkʌz maɪ kɑr broʊk daʊn/",audioUrl:"unit015/set-02.mp3",id:"L015-02"},
       {unit:"15",set:3,theme:"Break down",ja:"エレベーターが壊れたので、階段を使わなければなりません。",en:"The elevator broke down so we will have to take the stairs.",ipa:"/ði ˈɛləˌveɪtɚ broʊk daʊn soʊ wi wɪl hæv tə teɪk ðə stɛrz/",audioUrl:"unit015/set-03.mp3",id:"L015-03"},
       {unit:"15",set:4,theme:"Break down",ja:"ひどい事故について説明しているとき、その女性は泣き崩れました。",en:"The woman broke down when describing the horrible accident.",ipa:"/ðə ˈwʊmən broʊk daʊn wɛn dɪˈskraɪbɪŋ ðə ˈhɔrəbəl ˈæksɪdənt/",audioUrl:"unit015/set-04.mp3",id:"L015-04"},
-      {unit:"15",set:5,theme:"Break down",ja:"その俳優は授賞式でのスピーチ中に泣き崩れました。",en:"The actor broke down during his speech at the award ceremony.",ipa:"/ði ˈæktɚ broʊk daʊn ˈdʊrɪŋ hɪz spiːtʃ ət ði əˈwɔrd ˌsɛrəˌmoʊni/",audioUrl:"unit015/set-05.mp3",id:"L015-05"}
+      {unit:"15",set:5,theme:"Break down",ja:"その俳優は授賞式でのスピーチ中に泣き崩れました。",en:"The actor broke down during his speech at the award ceremony.",ipa:"/ði ˈæktɚ broʊk daʊn ˈdʊrɪŋ hɪz spiːtʃ ət ði əˈwɔrd ˌsɛrəˌmoʊni/",audioUrl:"unit015/set-05.mp3",id:"L015-05"},
+      {unit:"16",set:1,theme:"Fill out",ja:"この書類に記入して、私のところに戻してください。",en:"Please fill out this paperwork and bring it back to me.",audioUrl:"unit016/set-01.mp3",id:"L016-01"},
+      {unit:"16",set:2,theme:"Fill out",ja:"医者に診察してもらう前に、5種類の書類を埋めなければなりませんでした。",en:"I had to fill out five different forms before I could see the doctor.",audioUrl:"unit016/set-02.mp3",id:"L016-02"},
+      {unit:"16",set:3,theme:"Fill out",ja:"このかんたんなアンケートにご記入いただいたお客さまは、20%の割引が受けられます。",en:"Customers who fill out this simple questionnaire can get a 20% discount.",audioUrl:"unit016/set-03.mp3",id:"L016-03"},
+      {unit:"16",set:4,theme:"Fill out",ja:"若い頃はとても痩せていましたが、高校時代に健康な体つきになりました。",en:"I was very skinny in my youth but filled out during my high school years.",audioUrl:"unit016/set-04.mp3",id:"L016-04"},
+      {unit:"16",set:5,theme:"Fill out",ja:"彼は病気のとき20ポンド体重が減りましたが、回復後には申し分なく体重を増やしました。",en:"He lost 20 pounds when he was sick but filled out nicely after recovering.",audioUrl:"unit016/set-05.mp3",id:"L016-05"},
+      {unit:"17",set:1,theme:"Hold up",ja:"デモの参加者たちは看板を高く掲げて大使館前を行進しました。",en:"The demonstrators held up signs and marched in front of the embassy.",audioUrl:"unit017/set-01.mp3",id:"L017-01"},
+      {unit:"17",set:2,theme:"Hold up",ja:"警備員にはっきり見えるようにパスポートを持ち上げてください。",en:"Hold up your passports so the security guards can see them clearly.",audioUrl:"unit017/set-02.mp3",id:"L017-02"},
+      {unit:"17",set:3,theme:"Hold up",ja:"吹雪のため、電車の出発が遅れました。",en:"Our train's departure was held up due to a snowstorm.",audioUrl:"unit017/set-03.mp3",id:"L017-03"},
+      {unit:"17",set:4,theme:"Hold up",ja:"会議を遅らせてしまいほんとうにすみません。",en:"I am really sorry for holding up the meeting.",audioUrl:"unit017/set-04.mp3",id:"L017-04"},
+      {unit:"17",set:5,theme:"Hold up",ja:"4人の男が銀行強盗に入り何百万もの金を盗んで逃げました。",en:"The four men held up the bank and escaped with millions.",audioUrl:"unit017/set-05.mp3",id:"L017-05"},
+      {unit:"18",set:1,theme:"Hold out",ja:"ファンたちはサインをもらおうとして、あらゆる物を差し出しました。",en:"The fans held out all kinds of objects in attempt to get a signature.",audioUrl:"unit018/set-01.mp3",id:"L018-01"},
+      {unit:"18",set:2,theme:"Hold out",ja:"ホームレスの男性は人々がお金を入れてくれるようにカップを差し延べました。",en:"The homeless man held out a cup for people to put money in.",audioUrl:"unit018/set-02.mp3",id:"L018-02"},
+      {unit:"18",set:3,theme:"Hold out",ja:"兵士たちは最後まで抵抗しましたが、ついには敗北を喫しました。",en:"The soldiers held out until the very end, but were eventually defeated.",audioUrl:"unit018/set-03.mp3",id:"L018-03"},
+      {unit:"18",set:4,theme:"Hold out",ja:"患者は手術しなければ、これ以上持ちこたえることはできないでしょう。",en:"The patient won't be able to hold out much longer without surgery.",audioUrl:"unit018/set-04.mp3",id:"L018-04"},
+      {unit:"18",set:5,theme:"Hold out",ja:"われわれの食料は、これ以上はもちません。",en:"Our food supply won't hold out for much longer.",audioUrl:"unit018/set-05.mp3",id:"L018-05"},
+      {unit:"19",set:1,theme:"Turn down",ja:"テレビの音量を下げないと、ご近所から苦情が来ますよ！",en:"Turn down your TV or the neighbors are going to complain!",audioUrl:"unit019/set-01.mp3",id:"L019-01"},
+      {unit:"19",set:2,theme:"Turn down",ja:"さらにロマンチックな雰囲気を作ろうと、彼は明かりを暗くしました。",en:"He turned down the lights to create a more romantic atmosphere.",audioUrl:"unit019/set-02.mp3",id:"L019-02"},
+      {unit:"19",set:3,theme:"Turn down",ja:"仕事を変えたくはなかったのですが、断るには先方のオファーがよすぎたのです。",en:"I didn't want to change jobs but their offer was too good to turn down.",audioUrl:"unit019/set-03.mp3",id:"L019-03"},
+      {unit:"19",set:4,theme:"Turn down",ja:"彼は彼女をデートに誘いましたが、彼女は断りました。",en:"He asked her out on a date but she turned him down.",audioUrl:"unit019/set-04.mp3",id:"L019-04"},
+      {unit:"19",set:5,theme:"Turn down",ja:"会社は私にニューヨークでのポジションを提供しましたが、断りました。",en:"The company offered me a position in New York but I turned it down.",audioUrl:"unit019/set-05.mp3",id:"L019-05"},
+      {unit:"20",set:1,theme:"Turn up",ja:"聞こえるようにテレビの音量を上げて！",en:"Please turn up the TV so I can hear it!",audioUrl:"unit020/set-01.mp3",id:"L020-01"},
+      {unit:"20",set:2,theme:"Turn up",ja:"この中は凍えるほど寒いですね！ ヒーターの温度を上げてください！",en:"It's freezing in here! Turn up the heat(er)!",audioUrl:"unit020/set-02.mp3",id:"L020-02"},
+      {unit:"20",set:3,theme:"Turn up",ja:"なくなったお財布は心配しなくていいですよ、きっと出てきますから。",en:"Don't worry about your lost wallet, I am sure it will turn up.",audioUrl:"unit020/set-03.mp3",id:"L020-03"},
+      {unit:"20",set:4,theme:"Turn up",ja:"彼は授業に遅れて現れただけでなく、宿題も忘れてきました。",en:"Not only did he turn up late for class, he forgot his homework.",audioUrl:"unit020/set-04.mp3",id:"L020-04"},
+      {unit:"20",set:5,theme:"Turn up",ja:"警察は犯行現場を捜査しましたが、手掛かりはなにひとつ見つかりませんでした。",en:"The police investigated the crime scene but didn't turn up any clues.",audioUrl:"unit020/set-05.mp3",id:"L020-05"}
     ];
 
     const els = {
@@ -529,6 +608,8 @@
       againBtn: document.getElementById("againBtn"),
       questionBody: document.getElementById("questionBody")
     };
+    const REVIEW_STORAGE_KEY = "pv-quiz-review-decks-v1";
+
     const state = {
       unitRange:null,
       mode:null,
@@ -538,9 +619,29 @@
       score:0,
       answered:false,
       rate:1,
-      reviewDecks:{ ok:[], bad:[] },
+      reviewDecks:loadReviewDecks(),
       isReview:false
     };
+
+    function loadReviewDecks(){
+      try{
+        const saved = JSON.parse(localStorage.getItem(REVIEW_STORAGE_KEY));
+        return ["ok", "bad"].reduce((decks, kind) => {
+          decks[kind] = (saved?.[kind] || [])
+            .map(id => DATA.find(card => card.id === id))
+            .filter(Boolean);
+          return decks;
+        }, { ok:[], bad:[] });
+      } catch {
+        return { ok:[], bad:[] };
+      }
+    }
+    function saveReviewDecks(){
+      localStorage.setItem(REVIEW_STORAGE_KEY, JSON.stringify({
+        ok:state.reviewDecks.ok.map(card => card.id),
+        bad:state.reviewDecks.bad.map(card => card.id)
+      }));
+    }
 
     function shuffle(items){
       return [...items].sort(() => Math.random() - .5);
@@ -554,7 +655,6 @@
       els.bottomNav.classList.toggle("hidden", panel !== els.quizPanel);
     }
     function selectRange(unitRange){
-      state.reviewDecks = { ok:[], bad:[] };
       state.unitRange = unitRange;
       els.modeUnitLabel.textContent = rangeLabel();
       els.sub.textContent = rangeLabel();
@@ -596,7 +696,7 @@
     function renderBottomNav(){
       const tests = [1,2,3,4,5];
       els.bottomNav.innerHTML = `
-        ${tests.map(set => `<button class="ghost" type="button" data-set="${set}">TEST ${set}</button>`).join("")}
+        ${state.isReview ? "" : tests.map(set => `<button class="ghost" type="button" data-set="${set}">TEST ${set}</button>`).join("")}
         <button class="ghost" type="button" data-review="ok" ${state.reviewDecks.ok.length ? "" : "disabled"}>△</button>
         <button class="ghost" type="button" data-review="bad" ${state.reviewDecks.bad.length ? "" : "disabled"}>×</button>
         <button class="ghost" type="button" data-top="true">TOP</button>
@@ -610,26 +710,45 @@
       els.bottomNav.querySelector("[data-top]").addEventListener("click", goHome);
     }
     function addReview(kind, card){
-      if (kind !== "ok" && kind !== "bad") return;
-      const deck = state.reviewDecks[kind];
-      const existing = deck.findIndex(item => item.id === card.id);
-      if (existing >= 0) deck.splice(existing, 1);
-      deck.push(card);
+      ["ok", "bad"].forEach(reviewKind => {
+        const deck = state.reviewDecks[reviewKind];
+        const existing = deck.findIndex(item => item.id === card.id);
+        if (existing >= 0) deck.splice(existing, 1);
+        if (reviewKind === kind) deck.push(card);
+      });
+      saveReviewDecks();
+      renderGlobalReviewButtons();
       renderBottomNav();
     }
     function startReview(kind){
       const deck = state.reviewDecks[kind];
       if (!deck.length) return;
+      state.unitRange = "1-20";
+      state.mode = state.mode || "instant";
       state.set = kind === "ok" ? "△" : "×";
       state.deck = shuffle(deck);
       state.index = 0;
       state.score = 0;
       state.isReview = true;
+      els.sub.textContent = `UNIT横断 · ${state.set} CHECK · ${state.mode === "instant" ? "瞬間英作文 MODE" : "SPEAKING MODE"}`;
       els.result.classList.remove("show");
       els.questionBody.style.display = "";
       renderBottomNav();
       show(els.quizPanel);
       renderQuestion();
+    }
+    function renderGlobalReviewButtons(){
+      document.querySelectorAll("[data-global-review]").forEach(btn => {
+        const count = state.reviewDecks[btn.dataset.globalReview].length;
+        btn.disabled = count === 0;
+        btn.querySelector("span").textContent = count
+          ? `UNIT横断・${count}問を復習`
+          : "復習リストは空です";
+      });
+    }
+    function startGlobalReview(kind){
+      state.mode = "instant";
+      startReview(kind);
     }
     function renderQuestion(){
       const card = state.deck[state.index];
@@ -701,12 +820,17 @@
       els.audio.pause();
       state.unitRange = null;
       state.mode = null;
+      state.isReview = false;
       els.sub.textContent = "UNITを選んで挑戦してください！";
+      renderGlobalReviewButtons();
       show(els.homePanel);
     }
 
     document.querySelectorAll("[data-range]").forEach(btn => {
       btn.addEventListener("click", () => selectRange(btn.dataset.range));
+    });
+    document.querySelectorAll("[data-global-review]").forEach(btn => {
+      btn.addEventListener("click", () => startGlobalReview(btn.dataset.globalReview));
     });
     document.querySelectorAll("[data-mode]").forEach(btn => {
       btn.addEventListener("click", () => selectMode(btn.dataset.mode));
@@ -732,6 +856,7 @@
         els.speedRow.querySelectorAll("button").forEach(item => item.classList.toggle("active", item === btn));
       });
     });
+    renderGlobalReviewButtons();
   </script>
 </body>
 </html>
